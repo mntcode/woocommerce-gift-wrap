@@ -14,6 +14,10 @@ class WC_GiftWrap {
         // Display on backend product admin pages.
         add_filter('woocommerce_product_data_tabs', array($this, 'add_giftwrap_product_tab'));
         add_filter('woocommerce_product_data_panels', array($this, 'giftwrap_product_panel_content')); // Requires WC 2.6+
+
+        // Save the product meta options.
+        add_action('woocommerce_process_product_meta_simple', 'save_giftwrap_fields');
+        add_action('woocommerce_process_product_meta_variable', 'save_giftwrap_fields');
     }
 
     public function add_giftwrap_product_tab($tabs) {
@@ -67,4 +71,16 @@ class WC_GiftWrap {
         <?php
     }
 
+    public function save_giftwrap_fields($post_id) {
+        $giftwrap_enabled = isset($_POST['_giftwrapping_enabled']) ? 'yes' : 'no';
+        update_post_meta($post_id, '_giftwrapping_enabled', $giftwrap_enabled);
+
+        if (isset($_POST['_giftwrapping_cost'])) {
+            update_post_meta($post_id, '_giftwrapping_cost', wc_clean($_POST['_giftwrapping_cost']));
+        }
+
+        if (isset($_POST['_giftwrapping_message'])) {
+            update_post_meta($post_id, '_giftwrapping_message', wc_clean($_POST['_giftwrapping_message']));
+        }
+    }
 }
