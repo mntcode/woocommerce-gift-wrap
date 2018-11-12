@@ -16,8 +16,8 @@ class WC_GiftWrap {
         add_filter('woocommerce_product_data_panels', array($this, 'giftwrap_product_panel_content')); // Requires WC 2.6+
 
         // Save the product meta options.
-        add_action('woocommerce_process_product_meta_simple', 'save_giftwrap_fields');
-        add_action('woocommerce_process_product_meta_variable', 'save_giftwrap_fields');
+        add_action('woocommerce_process_product_meta_simple', array($this, 'save_giftwrap_fields'));
+        add_action('woocommerce_process_product_meta_variable', array($this, 'save_giftwrap_fields'));
     }
 
     public function add_giftwrap_product_tab($tabs) {
