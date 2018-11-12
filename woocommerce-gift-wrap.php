@@ -20,4 +20,6 @@ if (!class_exists('WC_GiftWrap')) {
     include_once dirname(__FILE__) . '/includes/wc-giftwrap.class.php';
 }
 
+define('WC_GIFTWRAP_PATH', untrailingslashit(plugin_dir_path(__FILE__)));
+
 new WC_GiftWrap();
