@@ -31,6 +31,9 @@ class WC_GiftWrap {
         add_action('woocommerce_add_order_item_meta', array($this, 'add_order_item_meta'), 10, 2);
     }
 
+    /**
+     * Adds a tab to the product admin page that will allow us to display our gift-wrapping options.
+     */
     public function add_giftwrap_product_tab($tabs) {
         $tabs['giftwrap'] = array(
             'label'     => __('Gift Wrap', 'woocommerce'),
@@ -41,12 +44,18 @@ class WC_GiftWrap {
         return $tabs;
     }
 
+    /**
+     * Displays the product gift-wrapping options.
+     */
     public function giftwrap_product_panel_content() {
         wc_get_template('giftwrap_panel.php', array(
                 'default_giftwrap_message' => $this->default_giftwrap_message
         ), 'woocommerce-gift-wrap', WC_GIFTWRAP_PATH . '/templates/');
     }
 
+    /**
+     * Saves the product gift-wrapping options.
+     */
     public function save_giftwrap_fields($post_id) {
         $giftwrap_enabled = isset($_POST['_giftwrapping_enabled']) ? 'yes' : 'no';
         update_post_meta($post_id, '_giftwrapping_enabled', $giftwrap_enabled);
@@ -60,6 +69,9 @@ class WC_GiftWrap {
         }
     }
 
+    /**
+     * Loads the HTML template that is displayed on the product pages.
+     */
     public function product_page_html() {
         $is_wrappable = get_post_meta(get_the_ID(), '_giftwrapping_enabled', true) == 'yes';
 
@@ -79,6 +91,9 @@ class WC_GiftWrap {
         }
     }
 
+    /**
+     * Sets our gift-wrap data when the product is being added to the cart.
+     */
     public function add_cart_item_data($cart_item_data, $product_id) {
         $is_wrappable = get_post_meta($product_id, '_giftwrapping_enabled', true) == 'yes';
 
@@ -89,6 +104,9 @@ class WC_GiftWrap {
         return $cart_item_data;
     }
 
+    /**
+     * Updates the cart item price when it is being added to the cart.
+     */
     public function add_cart_item($cart_item_data) {
         if (!empty($cart_item_data['gift_wrap_item'])) {
             $current_price = $cart_item_data['data']->get_price();
@@ -104,6 +122,9 @@ class WC_GiftWrap {
         return $cart_item_data;
     }
 
+    /**
+     * Adds our gift-wrapped data to the cart item so it can be seen in the basket.
+     */
     public function get_item_data($item_data, $cart_item) {
         if (!empty($cart_item['gift_wrap_item'])) {
             $item_data[] = array(
@@ -116,6 +137,10 @@ class WC_GiftWrap {
         return $item_data;
     }
 
+    /**
+     * Updates the $cart_item price when it is retrieved from the PHP session to be stored
+     * in class variables.
+     */
     public function get_cart_item_from_session($cart_item, $values) {
         if (!empty($values['gift_wrap_item'])) {
             $cart_item['gift_wrap_item'] = true;
@@ -132,6 +157,9 @@ class WC_GiftWrap {
         return $cart_item;
     }
 
+    /**
+     * Adds gift wrapped meta to the order so it shows in the order overview and backend list.
+     */
     public function add_order_item_meta($item_id, $cart_item) {
         if (!empty($cart_item['gift_wrap_item'])) {
             wc_add_order_item_meta($item_id, __('Gift Wrapped', 'woocommerce'), __('Yes', 'woocommerce') );
