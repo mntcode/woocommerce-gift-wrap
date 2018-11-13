@@ -85,8 +85,8 @@ class WC_GiftWrap {
 
             wc_get_template('product_page_checkbox.php', array(
                 'is_checked'                => $is_checked,
-                'giftwrapping_cost'         => $giftwrapping_cost,
-                'giftwrapping_message'      => $giftwrapping_message
+                'giftwrapping_message'      => $giftwrapping_message,
+                'giftwrapping_cost_text'    => $this->get_price_text($giftwrapping_cost)
             ), 'woocommerce-gift-wrap', WC_GIFTWRAP_PATH . '/templates/');
         }
     }
@@ -127,10 +127,12 @@ class WC_GiftWrap {
      */
     public function get_item_data($item_data, $cart_item) {
         if (!empty($cart_item['gift_wrap_item'])) {
+            $giftwrapping_cost = get_post_meta($cart_item['product_id'], '_giftwrapping_cost', true);
+
             $item_data[] = array(
                 'name'      => __('Gift Wrapped', 'woocommerce'),
                 'value'     => __('Yes', 'woocommerce'),
-                'display'   => __('Yes', 'woocommerce')
+                'display'   => __('Yes', 'woocommerce') . ' (' . $this->get_price_text($giftwrapping_cost) . ')'
             );
         }
 
@@ -164,5 +166,13 @@ class WC_GiftWrap {
         if (!empty($cart_item['gift_wrap_item'])) {
             wc_add_order_item_meta($item_id, __('Gift Wrapped', 'woocommerce'), __('Yes', 'woocommerce') );
         }
+    }
+
+    //
+    // MARK: - Private
+    //
+
+    private function get_price_text($price) {
+        return $price == 0 ? 'Free' : wc_price($price);
     }
 }
